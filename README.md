@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body { font-family: Arial; padding: 20px; max-width: 800px; margin: auto; }
-button { padding: 10px; margin: 5px 0; width: 100%; font-size: 16px; }
+button { padding: 10px; margin: 5px 0; width: 100%; font-size: 16px; cursor: pointer; }
 input, select { padding: 8px; margin: 5px 0; width: 100%; font-size: 16px; }
 .hidden { display: none; }
 #question-box { margin-bottom: 20px; font-size: 20px; }
@@ -107,6 +107,10 @@ const questions = [
 
 // -------------------- START GAME --------------------
 function startGame(){
+  if(document.getElementById("playerName").value.trim() === "") {
+    alert("Please enter your name!");
+    return;
+  }
   document.getElementById("registration").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
   showQuestion();
@@ -115,14 +119,15 @@ function startGame(){
 // -------------------- SHOW QUESTION --------------------
 function showQuestion(){
   let q = questions[index];
-  document.getElementById("questionTitle").innerText = "Question " + (index+1) + " of 50";
+  document.getElementById("questionTitle").innerText = "Question " + (index+1) + " of " + questions.length;
   document.getElementById("questionText").innerText = q.q;
   let html = "";
   q.options.forEach(opt => {
-    html += `<button onclick="answer('${opt}')">${opt}</button><br>`;
+    html += `<button onclick="answer(&quot;${opt}&quot;)">${opt}</button><br>`;
   });
   document.getElementById("options").innerHTML = html;
   startTime = Date.now();
+  document.getElementById("reaction").innerText = "0";
 }
 
 // -------------------- ANSWER --------------------
@@ -130,9 +135,10 @@ function answer(selected){
   let q = questions[index];
   let reactionTime = (Date.now() - startTime)/1000;
   totalTime += reactionTime;
+  document.getElementById("reaction").innerText = reactionTime.toFixed(2);
   if(q.options[q.correct] === selected) correct++;
   index++;
-  if(index < 50) showQuestion();
+  if(index < questions.length) showQuestion();
   else endGame();
 }
 
@@ -141,7 +147,7 @@ function endGame(){
   document.getElementById("game").classList.add("hidden");
   document.getElementById("results").classList.remove("hidden");
 
-  let accuracy = (correct/50)*100;
+  let accuracy = (correct/questions.length)*100;
   let score = correct * 8; // adjust if needed
 
   document.getElementById("summary").innerHTML =
@@ -149,7 +155,7 @@ function endGame(){
     "<br>Accuracy: "+accuracy.toFixed(2)+"%"+
     "<br>Score: "+score+
     "<br>Total Time: "+totalTime.toFixed(2)+" sec"+
-    "<br>Average Reaction Time: "+(totalTime/50).toFixed(2)+" sec";
+    "<br>Average Reaction Time: "+(totalTime/questions.length).toFixed(2)+" sec";
 
   // create player object
   let player = {
@@ -157,12 +163,11 @@ function endGame(){
     napCondition: document.getElementById("napCondition").value,
     mood: document.getElementById("moodScale").value,
     score: score,
-    avgTime: totalTime/50
+    avgTime: totalTime/questions.length
   };
 
   submitToGoogleForm(player);
 }
-
 
 // --------------------------
 // Google Form submission
@@ -178,5 +183,6 @@ function submitToGoogleForm(player){
   fetch(url, { method:"POST", body:formData, mode:"no-cors" });
 }
 </script>
+
 </body>
 </html>
