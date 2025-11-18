@@ -1,11 +1,8 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>psychology of power nap - 50 Questions</title>
+<title> Game - 50 Questions</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body { font-family: Arial; padding: 20px; max-width: 800px; margin: auto; }
@@ -93,12 +90,6 @@ const questions = [
 {q:"What is 100 ÷ 10?", options:["5","10","15","20"], correct:1},
 {q:"Synonym of 'smart'?", options:["Intelligent","Dumb","Slow","Weak"], correct:0},
 {q:"Which is a reptile?", options:["Snake","Dog","Cat","Cow"], correct:0},
-{q:"Next in series: 3,6,9,___", options:["12","13","15","14"], correct:0},
-{q:"What is 8 x 5?", options:["40","35","45","50"], correct:0},
-{q:"Which is an even number?", options:["11","14","17","19"], correct:1},
-{q:"Synonym of 'tired'?", options:["Exhausted","Energetic","Happy","Joyful"], correct:0},
-{q:"Which planet has rings?", options:["Earth","Mars","Saturn","Venus"], correct:2},
-{q:"What is 7 + 8?", options:["14","15","16","13"], correct:1}
 ];
 
 let playerResults = [];
