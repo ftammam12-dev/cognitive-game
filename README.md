@@ -96,70 +96,64 @@ let playerResults = [];
 let player = {};
 let index = 0;
 let times = [];
-
+// -------------------- START GAME --------------------
 function startGame(){
-  const name = document.getElementById("playerName").value.trim();
-  const nap = document.getElementById("napCondition").value;
-  const mood = document.getElementById("moodScale").value;
-  if(!name){ alert("Enter name"); return; }
-  player = {name, napCondition:nap, mood, correct:0, score:0, avgTime:0};
-  index=0; times=[];
-  document.getElementById("registration").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
-  loadQuestion();
+  document.getElementById("startScreen").style.display="none";
+  document.getElementById("game").style.display="block";
+  showQuestion();
 }
 
-function loadQuestion(){
-  const q = questions[index];
-  document.getElementById("question-box").textContent = `Q${index+1}: ${q.q}`;
-  const answersDiv = document.getElementById("answers");
-  answersDiv.innerHTML = "";
-  q.options.forEach((opt,i)=>{
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.onclick = ()=>recordAnswer(i);
-    answersDiv.appendChild(btn);
+// -------------------- SHOW QUESTION --------------------
+function showQuestion(){
+  let q = questions[index];
+  document.getElementById("questionTitle").innerText = "Question " + (index+1) + " of 50";
+  document.getElementById("questionText").innerText = q.q;
+  let html = "";
+  q.options.forEach(opt => {
+    html += `<button onclick="answer('${opt}')">${opt}</button><br>`;
   });
+  document.getElementById("options").innerHTML = html;
   startTime = Date.now();
 }
 
-function recordAnswer(choice){
-  const reactionTime = (Date.now() - startTime)/1000;
-  times.push(reactionTime);
-  if(choice === questions[index].correct) player.correct++;
+// -------------------- ANSWER --------------------
+function answer(selected){
+  let q = questions[index];
+  let reactionTime = (Date.now() - startTime)/1000;
+  totalTime += reactionTime;
+  document.getElementById("reaction").innerText = reactionTime.toFixed(2);
+  if(selected === q.answer) correct++;
   index++;
-  if(index<questions.length) loadQuestion();
+  if(index<50) showQuestion();
   else endGame();
 }
 
+// -------------------- END GAME --------------------
 function endGame(){
-  const pointsPerCorrect = 320/44;
-  player.score = +(player.correct*pointsPerCorrect).toFixed(2);
-  player.avgTime = +(times.reduce((a,b)=>a+b,0)/times.length).toFixed(2);
-  playerResults.push(player);
-  document.getElementById("game").classList.add("hidden");
-  showResults();
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="block";
+
+  let accuracy = (correct/50)*100;
+  let score = correct * 8; // adjust if needed
+
+  document.getElementById("summary").innerHTML =
+    "Correct: "+correct+
+    "<br>Accuracy: "+accuracy.toFixed(2)+"%"+
+    "<br>Score: "+score+
+    "<br>Total Time: "+totalTime.toFixed(2)+" sec";
+
+  // create player object
+  let player = {
+    name: document.getElementById("playerName").value,
+    napCondition: document.getElementById("napStatus").value,
+    mood: document.getElementById("mood").value,
+    score: score,
+    avgTime: totalTime/50
+  };
+
   submitToGoogleForm(player);
 }
 
-function showResults(){
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.classList.remove("hidden");
-  let html = `<h3>Player Completed</h3>
-  <p><strong>Name:</strong> ${player.name}</p>
-  <p><strong>Nap Condition:</strong> ${player.napCondition}</p>
-  <p><strong>Mood:</strong> ${player.mood}</p>
-  <p><strong>Correct Answers:</strong> ${player.correct} / 50</p>
-  <p><strong>Score:</strong> ${player.score}</p>
-  <p><strong>Average Time per Question:</strong> ${player.avgTime.toFixed(2)} sec</p>
-  <button onclick="restart()">Restart</button>`;
-  resultsDiv.innerHTML = html;
-}
-
-function restart(){
-  document.getElementById("results").classList.add("hidden");
-  document.getElementById("registration").classList.remove("hidden");
-}
 
 // --------------------------
 // Google Form submission
