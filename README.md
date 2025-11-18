@@ -165,13 +165,13 @@ function restart(){
 // Google Form submission
 // --------------------------
 function submitToGoogleForm(player){
-  const url = "YOUR_GOOGLE_FORM_URL_HERE"; // replace with your form URL
+  const url = "https://docs.google.com/forms/d/e/1FAIpQLScJMOM5ykAKDG-nlsJSRvpvfQYlYT3Bj-50vVpfLB6apSkhpw/formResponse"; // replace with your form URL
   const formData = new FormData();
-  formData.append("entry.XXXXXX", player.name); // replace with actual entry IDs
-  formData.append("entry.YYYYYY", player.napCondition);
-  formData.append("entry.ZZZZZZ", player.mood);
-  formData.append("entry.AAAAAA", player.score);
-  formData.append("entry.BBBBBB", player.avgTime.toFixed(2));
+  formData.append("entry.1402254112", player.name); // replace with actual entry IDs
+  formData.append("entry.659099207", player.napCondition);
+  formData.append("entry.92104427", player.mood);
+  formData.append("entry.1990563217", player.score);
+  formData.append("entry.1887608061", player.avgTime.toFixed(2));
   fetch(url, { method:"POST", body:formData, mode:"no-cors" });
 }
 </script>
