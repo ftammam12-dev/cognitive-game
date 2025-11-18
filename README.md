@@ -171,7 +171,7 @@ function endGame(){
 
 // -------------------- SEND TO GOOGLE SHEET --------------------
 function submitToSheet(player){
-  const url = "PASTE_YOUR_WEB_APP_URL_HERE"; // ضع رابط Web App هنا
+  const url = "https://script.google.com/macros/s/AKfycbxfOLeffhN2hp5wswI_DUcN754SIYYhSDZUbG8I06UltF902b6W8hcbcIDRugE61lv8/exec"; // ضع رابط Web App هنا
   fetch(url, {
     method: "POST",
     body: JSON.stringify(player),
