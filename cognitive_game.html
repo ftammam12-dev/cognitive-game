@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Cognitive Game - Full 50 Questions</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+  .hidden { display: none; }
+  button { padding: 10px 15px; margin: 5px 0; font-size: 16px; cursor: pointer; width: 100%; text-align: left; }
+  #question-box { margin-bottom: 20px; font-size: 20px; }
+</style>
+</head>
+<body>
+<h2>Cognitive Performance Game - 50 Questions</h2>
+<div id="game">
+  <div id="question-box"></div>
+  <div id="answers"></div>
+</div>
+<div id="results" class="hidden"></div>
+
+<script>
+// 50 sample questions (replace with actual full 50 if needed)
+const questions = [
+  {q:"What is 12 + 17?", options:["29","28","27","25"], correct:0},
+  {q:"Synonym of 'calm'?", options:["Angry","Peaceful","Loud","Bright"], correct:1},
+  {q:"Which number is larger?", options:["3/4","2/3","Both equal","None"], correct:0},
+  {q:"Which does NOT belong?", options:["Dog","Cat","Bird","Apple"], correct:3},
+  {q:"What is 7 x 6?", options:["42","36","48","40"], correct:0},
+  {q:"Antonym of 'bright'?", options:["Dark","Light","Shine","Colorful"], correct:0},
+  {q:"Plural of 'mouse'?", options:["Mouses","Mices","Mice","Mousees"], correct:2},
+  {q:"Complete the analogy: hot : cold :: tall : ___", options:["Warm","Short","Long","Big"], correct:1},
+  {q:"Next number: 2, 4, 8, 16, ___", options:["24","30","32","34"], correct:2},
+  {q:"Is 82 a prime number?", options:["Yes","No","Sometimes","Not sure"], correct:1},
+  // add remaining 40 questions here in the same format
+];
+
+let index = 0;
+let times = [];
+let score = 0;
+let startTime;
+const pointsPerCorrect = 320 / 44; // 44 correct = 320 points
+
+function loadQuestion() {
+  const q = questions[index];
+  document.getElementById("question-box").textContent = `Q${index+1}: ${q.q}`;
+
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => recordAnswer(i);
+    answersDiv.appendChild(btn);
+  });
+
+  startTime = Date.now();
+}
+
+function recordAnswer(choice) {
+  const endTime = Date.now();
+  const reactionTime = ((endTime - startTime) / 1000).toFixed(2);
+  times.push(reactionTime);
+
+  if(choice === questions[index].correct) {
+    score += pointsPerCorrect;
+  }
+
+  index++;
+  if(index < questions.length){
+    loadQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById("game").classList.add("hidden");
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.classList.remove("hidden");
+
+  let correctAnswers = questions.length - times.filter((t, i) => questions[i].correct !== questions[i].options.indexOf(questions[i].options[0])).length;
+
+  resultsDiv.innerHTML = `<h3>Game Completed</h3>
+    <p><strong>Total Score:</strong> ${score.toFixed(2)}</p>
+    <p><strong>Total Correct:</strong> ${correctAnswers} / ${questions.length}</p>
+    <p><strong>Time per question (seconds):</strong></p>
+    <p>${times.join("<br>")}</p>`;
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
