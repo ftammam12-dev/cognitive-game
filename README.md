@@ -171,7 +171,7 @@ function endGame(){
 
 // -------------------- SEND TO GOOGLE SHEET --------------------
 function submitToSheet(player){
-  const url = "https://script.google.com/macros/s/AKfycbxry1iQ2MiZlpWz7o36ZM3qst7hpVS_aMAqD8GgsJLOtVG2JJ0YFMGIYTAzlFrmJhMe/exec"; // ضع رابط Web App هنا
+  const url = "https://script.google.com/macros/s/AKfycbwdn2gdaNoWqSIUYmEa1xBrtPx5F0HkldmrOTLDdh2Or89CsHbmL9ovUt80EqQxIo4/exec"; // ضع رابط Web App هنا
   fetch(url, {
     method: "POST",
     body: JSON.stringify(player),
