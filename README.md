@@ -102,86 +102,89 @@ const questions = [
   {q:"Which is a prime number?", options:["8","11","12","14"], correct:1},
   {q:"What is 100 ÷ 10?", options:["5","10","15","20"], correct:1},
   {q:"Synonym of 'smart'?", options:["Intelligent","Dumb","Slow","Weak"], correct:0},
-  {q:"Which is a reptile?", options:["Snake","Dog","Cat","Cow"], correct:0},
 ];
 
 // -------------------- START GAME --------------------
-function startGame(){
-  if(document.getElementById("playerName").value.trim() === "") {
-    alert("Please enter your name!");
-    return;
-  }
-  document.getElementById("registration").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
-  showQuestion();
-}
+    function startGame() {
+      if (document.getElementById("playerName").value.trim() === "") {
+        alert("Please enter your name!");
+        return;
+      }
+      document.getElementById("registration").classList.add("hidden");
+      document.getElementById("game").classList.remove("hidden");
+      showQuestion();
+    }
 
-// -------------------- SHOW QUESTION --------------------
-function showQuestion(){
-  let q = questions[index];
-  document.getElementById("questionTitle").innerText = "Question " + (index+1) + " of " + questions.length;
-  document.getElementById("questionText").innerText = q.q;
-  let html = "";
-  q.options.forEach(opt => {
-    html += `<button onclick="answer(&quot;${opt}&quot;)">${opt}</button><br>`;
-  });
-  document.getElementById("options").innerHTML = html;
-  startTime = Date.now();
-  document.getElementById("reaction").innerText = "0";
-}
+    function showQuestion() {
+      let q = questions[index];
+      document.getElementById("questionTitle").innerText = "Question " + (index + 1) + " of " + questions.length;
+      document.getElementById("questionText").innerText = q.q;
+      let html = "";
+      q.options.forEach(opt => {
+        html += `<button onclick="answer('${opt}')">${opt}</button><br>`;
+      });
+      document.getElementById("options").innerHTML = html;
+      startTime = Date.now();
+      document.getElementById("reaction").innerText = "0";
+    }
 
-// -------------------- ANSWER --------------------
-function answer(selected){
-  let q = questions[index];
-  let reactionTime = (Date.now() - startTime)/1000;
-  totalTime += reactionTime;
-  document.getElementById("reaction").innerText = reactionTime.toFixed(2);
-  if(q.options[q.correct] === selected) correct++;
-  index++;
-  if(index < questions.length) showQuestion();
-  else endGame();
-}
+    function answer(selected) {
+      let q = questions[index];
+      let reactionTime = (Date.now() - startTime) / 1000;
+      totalTime += reactionTime;
+      document.getElementById("reaction").innerText = reactionTime.toFixed(2);
+      if (q.options[q.correct] === selected) correct++;
+      index++;
+      if (index < questions.length) showQuestion();
+      else endGame();
+    }
 
-// -------------------- END GAME --------------------
-function endGame(){
-  document.getElementById("game").classList.add("hidden");
-  document.getElementById("results").classList.remove("hidden");
+    function endGame() {
+      document.getElementById("game").classList.add("hidden");
+      document.getElementById("results").classList.remove("hidden");
 
-  let accuracy = (correct/questions.length)*100;
-  let score = correct * 8; 
+      let accuracy = (correct / questions.length) * 100;
+      let score = correct * 8;
+      let avgTime = totalTime / questions.length;
 
-  document.getElementById("summary").innerHTML =
-    "Correct: "+correct+
-    "<br>Accuracy: "+accuracy.toFixed(2)+"%"+
-    "<br>Score: "+score+
-    "<br>Total Time: "+totalTime.toFixed(2)+" sec"+
-    "<br>Average Reaction Time: "+(totalTime/questions.length).toFixed(2)+" sec";
+      document.getElementById("summary").innerHTML =
+        `Correct: ${correct}<br>` +
+        `Accuracy: ${accuracy.toFixed(2)}%<br>` +
+        `Score: ${score}<br>` +
+        `Total Time: ${totalTime.toFixed(2)} sec<br>` +
+        `Average Reaction Time: ${avgTime.toFixed(2)} sec`;
 
-  // create player object
-  let player = {
-    name: document.getElementById("playerName").value,
-    napCondition: document.getElementById("napCondition").value,
-    mood: document.getElementById("moodScale").value,
-    score: score,
-    avgTime: totalTime/questions.length
-  };
+      const player = {
+        name: document.getElementById("playerName").value,
+        napCondition: document.getElementById("napCondition").value,
+        mood: document.getElementById("moodScale").value,
+        score: score,
+        avgTime: avgTime
+      };
 
-  submitToSheet(player);
-}
+      submitToSheet(player);
+    }
 
-// -------------------- SEND TO GOOGLE SHEET --------------------
-function submitToSheet(player){
-  const url = "https://script.google.com/macros/s/AKfycbwdn2gdaNoWqSIUYmEa1xBrtPx5F0HkldmrOTLDdh2Or89CsHbmL9ovUt80EqQxIo4/exec"; // ضع رابط Web App هنا
-  fetch(url, {
-    method: "POST",
-    body: JSON.stringify(player),
-    headers: { "Content-Type": "application/json" }
-  })
-  .then(response => response.json())
-  .then(data => console.log("تم إرسال البيانات:", data))
-  .catch(err => console.error("خطأ في الإرسال:", err));
-}
-</script>
+    function submitToSheet(player) {
+      const url = "https://script.google.com/macros/s/AKfycbwdn2gdaNoWqSIUYmEa1xBrtPx5F0HkldmrOTLDdh2Or89CsHbmL9ovUt80EqQxIo4/exec";
+
+      fetch(url, {
+        method: "POST",
+        redirect: "follow",  // important for GAS redirect
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(player)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("تم إرسال البيانات:", data);
+      })
+      .catch(err => {
+        console.error("خطأ في الإرسال:", err);
+      });
+    }
+  </script>
 
 </body>
 </html>
