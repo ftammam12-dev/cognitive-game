@@ -166,7 +166,7 @@ const questions = [
     }
 
     function submitToSheet(player) {
-      const url = "https://script.google.com/macros/s/AKfycbwdn2gdaNoWqSIUYmEa1xBrtPx5F0HkldmrOTLDdh2Or89CsHbmL9ovUt80EqQxIo4/exec";
+      const url = "https://script.google.com/macros/s/AKfycbwotonaTo-9HLQfc27M934-k-VJYrjND3uNFCTdbH4I7rrG4QU3-pV-VjQNd88x-A5L/exec";
 
       fetch(url, {
         method: "POST",
